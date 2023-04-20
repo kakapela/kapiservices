@@ -1,15 +1,17 @@
 package com.customer.service;
 
+import com.clients.fraud.FraudCheckResponse;
+import com.clients.fraud.FraudClient;
 import com.customer.domain.Customer;
 import com.customer.dto.CustomerRegistrationRequest;
-import com.customer.dto.FraudCheckResponse;
 import com.customer.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public record CustomerService(CustomerRepository customerRepository,
-                              RestTemplate restTemplate) {
+                              RestTemplate restTemplate,
+                              FraudClient fraudClient) {
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
         Customer customer = Customer.builder()
                 .firstName(customerRegistrationRequest.firstName())
@@ -19,8 +21,7 @@ public record CustomerService(CustomerRepository customerRepository,
 
         customerRepository.saveAndFlush(customer);
 
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject("http://FRAUD/api/v1/fraud-check/{customerId}",
-                FraudCheckResponse.class, customer.getId());
+        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
 
         if (fraudCheckResponse.isFraudster())
         {
