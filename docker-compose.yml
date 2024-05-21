@@ -1,7 +1,7 @@
 services:
   postgres:
     container_name: postgres-kapiservices
-    image: postgres
+    image: postgres:15
     environment:
       POSTGRES_DB: kapelczakdb
       POSTGRES_USER: kapelczakdb
@@ -48,31 +48,31 @@ services:
     networks:
       - spring
 
-  eureka-server:
-    image: kapelczak/eureka-server:latest
-    container_name: eureka-server
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - spring
-    depends_on:
-      - zipkin
+#  eureka-server:
+#    image: kapelczak/eureka-server:latest
+#    container_name: eureka-server
+#    ports:
+#      - "8761:8761"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - spring
+#    depends_on:
+#      - zipkin
 
-  apigw:
-    image: kapelczak/api-gateway:latest
-    container_name: apigw
-    ports:
-      - "8083:8083"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - spring
-    depends_on:
-      - zipkin
-      - eureka-server
-
+#  apigw:
+#    image: kapelczak/api-gateway:latest
+#    container_name: apigw
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - spring
+#    depends_on:
+#      - zipkin
+#      - eureka-server
+#
   customer:
     image: kapelczak/customer:latest
     container_name: customer
